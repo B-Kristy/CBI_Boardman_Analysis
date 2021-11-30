@@ -1,6 +1,5 @@
 # Load Required Packages
 
-#library(ALDEx2)
 library(compositions)
 library(cowplot)
 library(cluster)
@@ -20,11 +19,10 @@ library(nlme)
 library(phyloseq)
 library(phylosmith)
 library(qiime2R)
-#library(SpiecEasi)
 library(tidyverse)
 library(vegan)
 library(zCompositions)
-#source("C:/Users/Brand/OneDrive/Documents/R/win-library/4.1/ANCOM-master/scripts/ancom_v2.1.R")
+source("C:/Users/Brand/OneDrive/Documents/R/win-library/4.1/ANCOM-master/scripts/ancom_v2.1.R")
 
 #Set-up ------------------------------------------------------------------------
 # Set Working Directory
@@ -215,7 +213,7 @@ curve_16S <- ggplot(rarefaction_curve_data_summary_verbose %>% filter(Measure ==
                                                        "root_endosphere" = "Root Endosphere", 
                                                        "soil" = "Soil")),
              scales = 'free') +
-  scale_color_manual("Plant Compartment",
+  scale_color_manual("Microbiome Compartment",
                     values = c("#FC8D62", "#8DA0CB", "#66C2A5"),
                     labels = c(bquote(paste("Root Endosphere", sep="")),
                                bquote(paste("Rhizosphere", sep="")),
@@ -255,7 +253,7 @@ curve_ITS <- ggplot(rarefaction_curve_data_summary_verbose %>% filter(Measure ==
                                                        "root_endosphere" = "Root Endosphere", 
                                                        "soil" = "Soil")),
              scales = 'free') +
-  scale_color_manual("Plant Compartment",
+  scale_color_manual("Microbiome Compartment",
                      values = c("#FC8D62", "#8DA0CB", "#66C2A5"),
                      labels = c(bquote(paste("Root Endosphere", sep="")),
                                 bquote(paste("Rhizosphere", sep="")),
@@ -270,7 +268,7 @@ curve_ITS
 prow <- plot_grid(curve_16S + theme(legend.position = "none"), curve_ITS + theme(legend.position = "none"), ncol = 1, labels = "AUTO", align = "vh")
 leg <- get_legend(curve_16S)
 prow <- plot_grid(prow, leg, ncol = 2, rel_widths = c(1, 0.23))
-ggsave(filename=paste("rarefaction_curves.tiff", sep=""), plot=prow, width = 8.5, height=6.5, dpi=600)
+ggsave(filename=paste("rarefaction_curves.tiff", sep=""), plot=prow, width = 9.4, height=6.5, dpi=600)
 
 # Taxonomy --------------------------------------------------------------
 # 16S Habitat Overview Plot
@@ -539,7 +537,7 @@ dispersion_16S$group <- factor(dispersion_16S$group, levels = c("root_endosphere
 groups <- dispersion_16S$group
 level_order <- c("root_endosphere", "rhizosphere", "soil")
 disper_16S_plot <- ggplot(data=data, aes(x= factor(Group, level = level_order), y=Distance_to_centroid, colour = groups)) + geom_boxplot(alpha=0.5) + geom_jitter(shape = 16, size =2, position = position_jitter(0.2)) +
-        scale_color_manual("Plant Compartment",
+        scale_color_manual("Microbiome Compartment",
                     values = c("#FC8D62", "#8DA0CB", "#66C2A5"),
                     labels = c(expression(paste("Root Endosphere", sep="")),
                                expression(paste("Rhizosphere", sep="")),
@@ -564,7 +562,7 @@ ggplot() +
   scale_x_continuous(name = paste0(paste0("dbRDA 1 (", round(100*as.data.frame(summary(rda_16S)$cont)[2,1], 1)), "%)")) +
   scale_y_continuous(name = paste0(paste0("dbRDA 2 (", round(100*as.data.frame(summary(rda_16S)$cont)[2,2], 1)), "%)")) +
   theme_bw() +
-  scale_color_manual("Plant Compartment",
+  scale_color_manual("Microbiome Compartment",
                      values = c("#FC8D62", "#8DA0CB", "#66C2A5"),
                      labels = c(expression(paste("Root Endosphere", sep="")),
                                 expression(paste("Rhizosphere", sep="")),
@@ -608,7 +606,7 @@ data_ITS <- data.frame(Distance_to_centroid=dispersion_ITS$distances, Group=disp
 groups_ITS <- dispersion_ITS$group
 level_order <- c("root_endosphere", "rhizosphere", "soil")
 disper_ITS_plot <- ggplot(data=data_ITS, aes(x= factor(Group, level = level_order), y=Distance_to_centroid, color = groups_ITS)) + geom_boxplot(alpha=0.5) + geom_jitter(shape = 16, size =2, position = position_jitter(0.2)) + 
-  scale_color_manual("Plant Compartment",
+  scale_color_manual("Microbiome Compartment",
                      values = c("#FC8D62", "#8DA0CB", "#66C2A5"),
                      labels = c(expression(paste("Root Endosphere", sep="")),
                                 expression(paste("Rhizosphere", sep="")),
@@ -634,7 +632,7 @@ ggplot() +
   scale_x_continuous(name = paste0(paste0("dbRDA 1 (", round(100*as.data.frame(summary(rda_ITS)$cont)[2,1], 1)), "%)")) +
   scale_y_continuous(name = paste0(paste0("dbRDA 2 (", round(100*as.data.frame(summary(rda_ITS)$cont)[2,2], 1)), "%)")) +
   theme_bw() +
-  scale_color_manual("Plant Compartment",
+  scale_color_manual("Microbiome Compartment",
                      values = c("#FC8D62", "#8DA0CB", "#66C2A5"),
                      labels = c(expression(paste("Root Endosphere", sep="")),
                                 expression(paste("Rhizosphere", sep="")),
@@ -653,7 +651,7 @@ prow1 <- plot_grid(p_dbrda_16S + theme(legend.position = "none"), disper_16S_plo
 prow2 <- plot_grid(p_dbrda_its + theme(legend.position = "none"), disper_ITS_plot + theme(legend.position = "none"), labels = c("C","D"), ncol = 1, align = "v")
 prow3 <- plot_grid(prow1, prow2, leg, ncol = 3, rel_widths = c(1, 1,0.65))
 prow3 
-ggsave(filename=paste("beta_diversity_habitat.tiff", sep=""), plot=prow3, width=6.5, height=6.5, dpi=600)
+ggsave(filename=paste("beta_diversity_habitat.tiff", sep=""), plot=prow3, width=7.5, height=6.5, dpi=600)
 prow
 
 # Core Microbiome ----------------------------------------------
@@ -1783,7 +1781,7 @@ ggsave(filename=paste("ITS_treatment_beta_diversity.tiff", sep=""), plot=prow, w
 
 # Treatment Taxonomy------------------------------------------------------------
 
-# ITS --------------------------------------------------------------------------
+# ITS
 
 # Develop overview plot, subset by habitat; filter to most abundant genera
 # Phylum 
@@ -2108,7 +2106,7 @@ rel_ITS_2 <- plot_grid(grid_rel_plots_ITS2, leg, ncol = 1, nrow =2, rel_heights 
 rel_ITS_2
 ggsave(filename=paste("genus_ITS.tiff", sep=""), plot=rel_ITS_2, width=7.5, height=5, dpi=600)
 
-# 16S --------------------------------------------------------------------------
+# 16S 
 
 data_16S_rel <- transform_sample_counts(data_16S_counts, function(x) x/sum(x))
 
@@ -2714,7 +2712,7 @@ TukeyHSD(x)
 # ANCOM Differential Abundance Analysis 
 # 16S Datasets 
 
-# Root Endosphere -- Differentially Abundant ASVs due to Irrigation with Drought Tolerant Covariate --------------------------
+# Root Endosphere -- Differentially Abundant ASVs due to Irrigation with Drought Tolerant Covariate
 
 # Pre-Processing 
 # Step 1: Data preprocessing
@@ -2822,7 +2820,7 @@ prow <- plot_grid(prow, leg_16S, ncol = 1, rel_heights = c(1, 0.2))
 prow
 ggsave(filename=paste("16S_ancom_re.tiff",sep=""), plot=prow, width=10, height=5, dpi=300)
 
-# Rhizosphere -- Differentially Abundant ASVs due to Irrigation with Drought Tolerant Covariate ----------
+# Rhizosphere -- Differentially Abundant ASVs due to Irrigation with Drought Tolerant Covariate
 
 # Pre-Processing 
 # Step 1: Data preprocessing
@@ -3049,7 +3047,7 @@ prow <- plot_grid(prow, leg_16S, ncol = 1, rel_heights = c(1, 0.4))
 
 ggsave(filename=paste("16S_ancom_soil.tiff",sep=""), plot=prow, width=10, height=7, dpi=600)
 
-# ITS Datasets -----------------------------------------------------------
+# ITS Datasets
 
 # Root Endosphere -- Differentially Abundant ASVs due to Irrigation with Drought Tolerant Covariate 
 
@@ -3371,506 +3369,3 @@ prow <- plot_grid(fig_ancom_soil_irrigation + theme(legend.position = "none"), f
 prow <- plot_grid(prow, leg_ITS, ncol = 1, rel_heights = c(1, 0.1))
 
 ggsave(filename=paste("ITS_ancom_soil.tiff",sep=""), plot=prow, width=7.5, height=5, dpi=600)
-
-
-# Differential Abundance Heatmaps ----------------------------------------------
-# Drought Tolerant Taxa in the Root Endosphere
-# Subset OTU table to include only significant ASVS
-drought_re_asv <- subset(otu_table(data_16S_RE), rownames(otu_table(data_16S_RE)) %in% c('2dd9e191a81b91117b77df5eac7e6048',
-                                                                                         '72d325488d710b04688e0d14d0fea79d',
-                                                                                         'c757ad670c5d796cb866c941c62c4e33',
-                                                                                         'aee9f354c80ca7baa872c3da2fe462c2',
-                                                                                         '41300091835845bd9f0d2c9d5efa62e5'))
-drought_re_asv <- merge_phyloseq(drought_re_asv, tax_table(data_16S_RE), sample_data(data_16S_RE))
-# Plot Heatmap
-heatmap1 <- plot_heatmap(drought_re_asv, method = NULL, sample.label = "drought_tolerance", 
-                         sample.order = "drought_tolerance", taxa.label = "Family",
-                         title = "16S Root Endosphere - Significant Drought Tolerant ASVs")
-heatmap1
-ggsave("ancom_re_drought_tolerance_heatmap.tiff", plot=heatmap1, width=10, height=5, dpi=300)
-# Irrigation Taxa in the Root Endosphere
-# Subset OTU table to include only significant ASVS
-irrigation_re_asv <- subset(otu_table(data_16S_RE), rownames(otu_table(data_16S_RE)) %in% c('b3c195907b2347a887d116e237540feb',
-                                                                                            'bc3676c17839094c4fa8e33268905268',
-                                                                                            'e984a619f22fe030e13c709b0489b52a',
-                                                                                            '754c7c6f3b6988d240275e2f44436292',
-                                                                                            'b3bc75b5a73133d32c26ffd8ae90d41d',
-                                                                                            '2653f9a6e90d957c951070035e6edeea',
-                                                                                            '47a9d10e32ffbceb163e240b65825d7e',
-                                                                                            '2740cf2417c92847cc298cbd71dd1fcd',
-                                                                                            '1c2b8892a0d7f828d72808cd01cfd199',
-                                                                                            'bcf0b339e6aacfad9c466f86e0c5971d',
-                                                                                            '2f6a15af8c9662afab9a6c1f0593eb88',
-                                                                                            'df71de0e92459aa808364311135bb8fc'))
-irrigation_re_asv <- merge_phyloseq(irrigation_re_asv, tax_table(data_16S_RE), sample_data(data_16S_RE))
-# Plot Heatmap
-heatmap2 <- plot_heatmap(irrigation_re_asv, method = NULL, sample.label = "irrigation", 
-                         sample.order = "irrigation", taxa.label = "Family",
-                         title = "16S Root Endosphere - Significant Irrigation ASVs")
-heatmap2
-ggsave("ancom_re_irrigation_heatmap.tiff", plot=heatmap2, width=10, height=5, dpi=300)
-
-# Drought Tolerant Taxa in the Rhizosphere
-# Subset OTU table to include only significant ASVS
-
-drought_rhizo_asv <- subset(otu_table(data_16S_rhizosphere), rownames(otu_table(data_16S_rhizosphere)) %in% c('c993a60d06e12487198bc56fa24c625f',
-                                                                                                              '9ac3bb1d7dedb08a012692a6f536b5af'))
-drought_rhizo_asv <- merge_phyloseq(drought_rhizo_asv, tax_table(data_16S_rhizosphere), sample_data(data_16S_rhizosphere))
-
-# Plot Heatmap
-heatmap3 <- plot_heatmap(drought_rhizo_asv, method = NULL, sample.label = "drought_tolerance", 
-                         sample.order = "drought_tolerance", taxa.label = "Family",
-                         title = "16S Rhizosphere - Significant Drought Tolerant ASVs")
-heatmap3
-ggsave("ancom_rhizo_drought_tolerance_heatmap.tiff", plot=heatmap3, width=10, height=5, dpi=300)
-
-# Irrigation Taxa in the Rhizosphere
-# Subset OTU table to include only significant ASVS
-irrigation_rhizo_asv <- subset(otu_table(data_16S_rhizosphere), rownames(otu_table(data_16S_rhizosphere)) %in% c('0ddcd311e02f742e2e0e61ce02cf9c29',
-                                                                                                                 '572b96fefec73aa11fc6628597853ed7',
-                                                                                                                 'aee9f354c80ca7baa872c3da2fe462c2',
-                                                                                                                 '0ec20bde5b936bac2e59d048604f9358',
-                                                                                                                 'e1c7d97fe13e9127d225d76a1feb8c78',
-                                                                                                                 '95d08381352f71ef3bc48445f8ccab02',
-                                                                                                                 '3125694452d98013214919bea3df321d',
-                                                                                                                 'c7c40b0f480f3edee216585ec048011d',
-                                                                                                                 '9ebd33169a6be011a108ff2661ae2bc6',
-                                                                                                                 '0dcffe423f594ed936b5435a15126443',
-                                                                                                                 '391c94b85cd374ec9623a32e9f9b4a03',
-                                                                                                                 '945184b6386c192c0066e0a98a154780',
-                                                                                                                 'a59a9a9b27bc75e0323284f8ac75d55e',
-                                                                                                                 'f9addd8a736ba8f99f715836c4086005',
-                                                                                                                 'c0d91dde8e97d4e7e3aa705c6ccb18e4',
-                                                                                                                 'de217a040cee6a1b45efadffa736efbf',
-                                                                                                                 '9d7b1963f8036854dd7b9aad0149310f',
-                                                                                                                 '8597d6b9d76ccfe81ca18d0bda2c6214',
-                                                                                                                 'a1ed615a4ed0b08c534fcc504a4608b2',
-                                                                                                                 'dda3edc4376cd111ef09921cf1a27da8',
-                                                                                                                 'daed5a5e05797a803338c4210f1d88c7',
-                                                                                                                 '2ee683d3ac3574f69eee1a2a1cd89d09',
-                                                                                                                 'ff836ceb31404b3a37e52a4af998742b',
-                                                                                                                 '0eb88b722902316b11770922bcdaca7b',
-                                                                                                                 '70fb4117bc0802189a5c54f648668ac9',
-                                                                                                                 'b4b365be5234d748dd5812df4ac2c6de',
-                                                                                                                 'c9d59b5dca26cd50adf46d0171c1e087',
-                                                                                                                 '40fa96a2f7fc7b939f5eb0d52d7e5b3c',
-                                                                                                                 'e05c79009fd7877b24e3127bd49986a0',
-                                                                                                                 '91a4ee945ca39dbc22df710686730f5b',
-                                                                                                                 'fb8ce5c795542b9f42e85c54f344f061',
-                                                                                                                 'fb60fb75664eaf6a23ae2c6124fbb005',
-                                                                                                                 'b968fc1f8ed4d7fbacac9d1f3a23ffc4',
-                                                                                                                 '1cf8836d9f2282cac057b416706ba561',
-                                                                                                                 'cfdf66ad8b27626f14f419a4f6c51b88',
-                                                                                                                 'e4e08e332b44c5b0f3c79143fb9c0f63',
-                                                                                                                 'f6c528c217081be9871de0fc58b89408',
-                                                                                                                 'df71de0e92459aa808364311135bb8fc',
-                                                                                                                 '9e56d913c8bbdccb6b373fb563f06f2a',
-                                                                                                                 '8dad047cb6374c9c0f872f5c36dcfea1',
-                                                                                                                 '7df299814b7a37f021b9bc3c3fc40080',
-                                                                                                                 'e61a7bc42a30f0ca4f170b5e3f6cad0c',
-                                                                                                                 'a70b83cbaaf606acfdb78362ffeaa506',
-                                                                                                                 'fb5c2aa7e7a97d1ba29b2c9405cb6a41',
-                                                                                                                 'f81076e084174a484f7d0c302f94437d',
-                                                                                                                 '3e67e934cc725d230d800c4c980327c8',
-                                                                                                                 'ddfaffe2f2f94985e611459236b87647',
-                                                                                                                 '25cb02fb17426d878afd69a79572b858',
-                                                                                                                 '833d619b70b86d87f185a0c98ac2fe57',
-                                                                                                                 '4bc2853b48494b7dd698fccb74a67f56',
-                                                                                                                 '3ebe761bfb1238c87195d431f41bf976',
-                                                                                                                 '50fb93dad525b440dc193bc631872eba',
-                                                                                                                 'c4def24d4e9cea12f3f0a8a0ca43afda',
-                                                                                                                 'a0b1f105f827e856c5fdb5f98eaecc09',
-                                                                                                                 '2e6bc9a35299587b295c308e5f616477',
-                                                                                                                 '41235f78280d0304e45c61651f6237db',
-                                                                                                                 '43e1ec8977fc7de1d298cbe9e7ce4fae',
-                                                                                                                 '034e2e9539ccb9186ee9b67b0429f29f',
-                                                                                                                 '45197ad8ceb6fc7a202b0162f679af5b',
-                                                                                                                 'fed4e369086175f7f4bafdf67f1c4dcf',
-                                                                                                                 '7684072284024ca2b426a6bdd04c45f9',
-                                                                                                                 '163076c2d7e10152bb3d0e2f4b28df75',
-                                                                                                                 'd1b7aa5cdc783723fadc6cdc643472f0',
-                                                                                                                 '0e11a8e894a8d9a3241d7cd7915570ac',
-                                                                                                                 'fe170a37c40648f3cd117b40946280fc',
-                                                                                                                 '333048cac277d86e040b020b11c3eabf',
-                                                                                                                 'c252134efa44f25e744c20e9ade0781e',
-                                                                                                                 'e07052bb9c0f0d2370537c4b9acbed4e',
-                                                                                                                 '9fe3cf958c80040f5c4ff05b64278e8a',
-                                                                                                                 '96cc99ed28e8cab1001fae99d2ff8c2e',
-                                                                                                                 'b48a188a24ed126894db7d73bd6617cc',
-                                                                                                                 '17f654dabb5544c03d515eea432c1632',
-                                                                                                                 'd554f717d25d5f90590ec252d3c67d0d',
-                                                                                                                 '13645da5ce1259a647f3bc11b09dcf13',
-                                                                                                                 'ec414a9986a44003df0ebd401213b7d0',
-                                                                                                                 '7b7f9c073366c233fa85c7a9aee5903c',
-                                                                                                                 'eb6091d870581bf798b9bf7056cee96e',
-                                                                                                                 '2bb412e90f3ddf0697b2d449b44a05b8',
-                                                                                                                 '594061ed4e2ea378773c474cd4803c29',
-                                                                                                                 'caa1df79927af52cdcf97e08f266aedd',
-                                                                                                                 '3a54d4e72af90b9c2fd50d7d1bb0336b',
-                                                                                                                 '690e2d312e3f83ab4ef9893d8c5eb3ab',
-                                                                                                                 '1394f8ffb5c637943daae55332628681',
-                                                                                                                 '7d9564562bb10cea1553ad90158d8545',
-                                                                                                                 '875dc0da5f66b1b5644788543a07544f',
-                                                                                                                 '99861da6145a8efcd3524241496cabe9',
-                                                                                                                 'd4cb29080e56a06ef36f99b209f2b225',
-                                                                                                                 '29d6eab2f173318980e3f98caf5af437',
-                                                                                                                 'd2d78251d7df8d1a835217535550cb59',
-                                                                                                                 '3c008d3fda79db47dd7167837a297c48',
-                                                                                                                 'd19dbb0e1566e9a2d91adda6f64e0232',
-                                                                                                                 '0f8ac0d81dd6449a43b34fcb184efd8f',
-                                                                                                                 '7034493f95fe775db5f9eeb1aac0cad9',
-                                                                                                                 'd58b6cf2e9af6364330b92566e14d59e',
-                                                                                                                 '52fd95eb476921cf2b9510888ea0cfe8',
-                                                                                                                 'eea13d94a260c6a4c38e783eb79c68d0',
-                                                                                                                 '809b77a90319f0cda021696d7150f1f0',
-                                                                                                                 '334da1236bd220d991a0acc859908b51',
-                                                                                                                 'c3b8b45ccbc3b2aac60dda6ef98d2863',
-                                                                                                                 '002664222d5c2d5b79c41b33598ea1e4',
-                                                                                                                 '802e0feee197426ddbe8feb3f3260cd3',
-                                                                                                                 'f47beff0fc3748fcf424bf33bc490cf2',
-                                                                                                                 '63321f408932c626da9ed1f1e73561e9',
-                                                                                                                 '8ff49840b8cdb3c84d65399a75f2f4c3',
-                                                                                                                 'e3bbf1bd6c612fbffbbf88f4dc54b805',
-                                                                                                                 'b9875bae83467e83cbb87f0bb6ed2db0',
-                                                                                                                 '2653f9a6e90d957c951070035e6edeea',
-                                                                                                                 '17e562606dc747dd9f950ce27d3eb95a',
-                                                                                                                 'd51c399452cc3e608552d0aca841b28c',
-                                                                                                                 'a7b330d77a6e4aab2ff36ba6314ac038',
-                                                                                                                 'a34c67c3e970be24a82f8b4c537c08ed',
-                                                                                                                 'bd88cc06608d082fa8df87333f49b4e0',
-                                                                                                                 'f91201adfe8be6ff17177daa8bb13518',
-                                                                                                                 '816ebb72c57410cfcc6c9c5db3a37129',
-                                                                                                                 'e8bd5a5228cd426c496dcd50f6dad542',
-                                                                                                                 '3bed507c2cb7458e3bd9b0ee3692fecb',
-                                                                                                                 'bdd15f551778f16db860acaa49aa6713',
-                                                                                                                 '4922eb95c3994f40d0784f2cfbf7ede5',
-                                                                                                                 '3706633740d9189bb93aa193fb22ba60',
-                                                                                                                 'c4b069153ae53489ea1cbfb2de1cfb1d',
-                                                                                                                 '96799da3b007f0ef0e63b89430bfef93',
-                                                                                                                 'd0c8bf44946dc8315c6b9629eb472477',
-                                                                                                                 '614ed31805095132a7610c0e4ecbc205',
-                                                                                                                 '2fac845da336657d55f1a9f350c6bc09',
-                                                                                                                 '0a1967051180fbda882271ec5a9df0d9',
-                                                                                                                 'd892d40bc79d0c356bd2886ce8d120ee',
-                                                                                                                 'fa96cbd7b2df953f48e159b78c51527d',
-                                                                                                                 'f66df1898b46126275f1585978e60df0',
-                                                                                                                 '37db27274d1534b5ff701cfe737c1803',
-                                                                                                                 '1bc625bd6d3510d38f0b5b3f460bdc50',
-                                                                                                                 '91878d7c16811333ee5db6102c3be33e',
-                                                                                                                 '2f35bdf3cbfaa4cd319a51cc46764656',
-                                                                                                                 '6376ea6dab7d0fde3cd66f53b57e1484',
-                                                                                                                 'aa11b7fecbbca304e3b36cce12f5bb66',
-                                                                                                                 'ac68c7c702432c26bc13677cb4c1ea8f',
-                                                                                                                 '0b5f0a192b92c230e826d1ceb10f9d39',
-                                                                                                                 '7cf569dfce221cef78261d24e0ee9aba',
-                                                                                                                 '1e7808d3462d49317c9bcbe880a8cbb3'))
-
-irrigation_rhizo_asv <- merge_phyloseq(irrigation_rhizo_asv, tax_table(data_16S_rhizosphere), sample_data(data_16S_rhizosphere))
-# Plot Heatmap
-heatmap4 <- plot_heatmap(irrigation_rhizo_asv, method = NULL, sample.label = "irrigation", 
-                         sample.order = "irrigation", taxa.label = "Phylum", taxa.order = "Phylum", 
-                         title = "16S Rhizosphere - Significant Irrigation ASVs")
-heatmap4
-ggsave("ancom_rhizo_irrigation_heatmap.tiff", plot=heatmap4, width=10, height=7.5, dpi=600)
-
-# ITS Heatmaps
-# Rhizosphere 
-# Irrigation 
-irrigation_rhizo_asv <- subset(otu_table(data_ITS_rhizosphere), rownames(otu_table(data_ITS_rhizosphere)) %in% c('ddfb725268acf837fad0ee338ff65c48',
-                                                                                                                 '0ae3b4f6852b6ff563f44369fb98ad5b',
-                                                                                                                 '6ef2e36136cf7abb4b761ea5d2a09cde',
-                                                                                                                 'e93a30988c5ec5ebfb7fb7f63173a46b',
-                                                                                                                 '2806475cca11a74a5c4a7d25237ddb82',
-                                                                                                                 '03fde61dc4c88d74269ba23df5bd6228',
-                                                                                                                 'd5f74c08d012c17c4eea05a0bf0e82f8',
-                                                                                                                 'e9211240d9c06829f6e32a3d70c158a0',
-                                                                                                                 'f1b6d8b651c97d9c236773b5455c75f2',
-                                                                                                                 '90b66fdf3dbc01ffe01ff138d0d137b8',
-                                                                                                                 '270ab69cdcce97bb7a5c464fbde7bfaf',
-                                                                                                                 '8f797c8b6e732c0f7bf9f39dffa0b7bd',
-                                                                                                                 '146cc8e405249ba0e1cf5ab510e13934',
-                                                                                                                 '40c07191656c78fb28cc3167802945a6',
-                                                                                                                 '7254eb7970555c4265513095417bd51c',
-                                                                                                                 'f4d6675d1feb2de01ddccb53ecdcb556',
-                                                                                                                 '758895697a468b41e7a731e4e8c10915',
-                                                                                                                 '4411be6aa5f6f72703173d7def1eb076',
-                                                                                                                 '91f57df75fcdea17350c8d42d7ed4b4a',
-                                                                                                                 '378b3b7b4bc00ee26fdd851f0ee00849',
-                                                                                                                 '3b5b00c96015fc6801eb8a75ce491c15',
-                                                                                                                 'dbad2bc744548baef8805553e9e7c829',
-                                                                                                                 '52f19787a7ce17c334d1b4dac36ad475',
-                                                                                                                 '0182952ed15b504a960fcf13ecd856d4',
-                                                                                                                 'ae14245b252cfdfbf0cffd0fbf6b6abd',
-                                                                                                                 '84040ce2d7a10c0da47188d46f7cc558'))
-
-irrigation_rhizo_asv <- merge_phyloseq(irrigation_rhizo_asv, tax_table(data_ITS_rhizosphere), sample_data(data_ITS_rhizosphere))
-# Plot Heatmap
-heatmap4 <- plot_heatmap(irrigation_rhizo_asv, method = NULL, sample.label = "irrigation", 
-                         sample.order = "irrigation", taxa.label = "Family", taxa.order = "Family", 
-                         title = "ITS Rhizosphere - Significant Irrigation ASVs")
-heatmap4
-ggsave("ancom_rhizo_irrigation_heatmap_ITS.tiff", plot=heatmap4, width=10, height=7.5, dpi=600)
-
-# Drought Tolerance 
-drought_rhizo_asv <- subset(otu_table(data_ITS_rhizosphere), rownames(otu_table(data_ITS_rhizosphere)) %in% c('894a0203a42894a47bdde5f2c94e62e8',
-                                                                                                              '74c4e4f306d9988a8d4e4e08a2ea0670'))
-drought_rhizo_asv <- merge_phyloseq(drought_rhizo_asv, tax_table(data_ITS_rhizosphere), sample_data(data_ITS_rhizosphere))
-
-# Plot Heatmap
-heatmap3 <- plot_heatmap(drought_rhizo_asv, method = NULL, sample.label = "drought_tolerance", 
-                         sample.order = "drought_tolerance", taxa.label = "Family",
-                         title = "ITS Rhizosphere - Significant Drought Tolerant ASVs")
-heatmap3
-ggsave("ancom_rhizo_drought_tolerance_heatmap_ITS.tiff", plot=heatmap3, width=10, height=5, dpi=300)
-
-# Network Analysis ---------------------------------------------------
-# Root Endosphere Network --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-output.path <- "C:/Users/Brand/Dropbox/Cregger_CBI_drought/results/treatment_analysis/network/"
-
-# Increase filtering parameters to improve network resolution
-data_16S_root_endosphere <- subset_samples(data_16S_filtered, habitat=="root_endosphere")%>%
-  filter_taxa(function(x) sum(x > 5) > (0.2*length(x)), TRUE)
-data_16S_re_reduced <- subset_samples(data_16S_root_endosphere, irrigation=="reduced")
-data_16S_re_reduced_l030 <- subset_samples(data_16S_re_reduced, drought_tolerance =="LO30")
-data_16S_re_reduced_hi30 <- subset_samples(data_16S_re_reduced, drought_tolerance == "HI30")
-data_16S_re_full <- subset_samples(data_16S_root_endosphere, irrigation =="full")
-data_16S_re_full_l030 <- subset_samples(data_16S_re_full, drought_tolerance == "LO30")
-data_16S_re_full_hi30 <- subset_samples(data_16S_re_full, drought_tolerance == "HI30")
-
-data_ITS_root_endosphere <-subset_samples(data_ITS_filtered, habitat=="root_endosphere")%>%
-  filter_taxa(function(x) sum(x > 5) > (0.2*length(x)), TRUE)
-data_ITS_re_reduced <- subset_samples(data_ITS_root_endosphere, irrigation =="reduced")
-data_ITS_re_reduced_l030 <- subset_samples(data_ITS_re_reduced, drought_tolerance =="LO30")
-data_ITS_re_reduced_hi30 <- subset_samples(data_ITS_re_reduced, drought_tolerance == "HI30")
-data_ITS_re_full <- subset_samples(data_ITS_root_endosphere, irrigation =="full")
-data_ITS_re_full_l030 <- subset_samples(data_ITS_re_full, drought_tolerance == "LO30")
-data_ITS_re_full_hi30 <- subset_samples(data_ITS_re_full, drought_tolerance == "HI30")
-
-# Generate subnetworks across each treatment
-data_ITS_re_reduced_l030 <- subset_samples(data_ITS_re_reduced_l030, data_ITS_re_reduced_l030@sam_data@row.names!="S-GW9583-3-5-37-rootendo")
-
-se.cor_RE_reduced_l030 <- spiec.easi(list(data_ITS_re_reduced_l030, data_16S_re_reduced_l030), 
-                                     method='mb', 
-                                     nlambda=100, 
-                                     lambda.min.ratio=1e-1, 
-                                     pulsar.params = list(thresh = 0.01))
-data_16S_re_reduced_hi30 <- subset_samples(data_16S_re_reduced_hi30, data_16S_re_reduced_hi30@sam_data@row.names!="S-56-4-25-9-rootendo")
-se.cor_RE_reduced_hi30 <- spiec.easi(list(data_ITS_re_reduced_hi30, data_16S_re_reduced_hi30),
-                                     method='mb',
-                                     nlambda=100,
-                                     lambda.min.ratio=1e-1,
-                                     pulsar.params = list(thresh= 0.01))
-
-se.cor_RE_full_l030 <- spiec.easi(list(data_ITS_re_full_l030, data_16S_re_full_l030),
-                                  method='mb',
-                                  nlambda=100,
-                                  lambda.min.ratio=1e-1,
-                                  pulsar.params = list(thresh= 0.01))
-
-se.cor_RE_full_hi30 <- spiec.easi(list(data_ITS_re_full_hi30, data_16S_re_full_hi30),
-                                  method='mb',
-                                  nlambda=100,
-                                  lambda.min.ratio=1e-1,
-                                  pulsar.params= list(thresh= 0.01))
-
-physeq_combo_reduced_l030 <-merge_phyloseq(data_ITS_re_reduced_l030, data_16S_re_reduced_l030)
-ig_reduced_l030 <- adj2igraph(getRefit(se.cor_RE_reduced_l030),vertex.attr=list(name=c(taxa_names(data_ITS_re_reduced_l030),taxa_names(data_16S_re_reduced_l030))))
-write.table(physeq_combo_reduced_l030@tax_table,file=file.path(output.path,"reduced_l030_tax.txt"),sep="\t", quote=FALSE)
-
-physeq_combo_reduced_hi30 <-merge_phyloseq(data_ITS_re_reduced_hi30, data_16S_re_reduced_hi30)
-ig_reduced_hi30 <- adj2igraph(getRefit(se.cor_RE_reduced_hi30),vertex.attr=list(name=c(taxa_names(data_ITS_re_reduced_hi30),taxa_names(data_16S_re_reduced_hi30))))
-write.table(physeq_combo_reduced_hi30@tax_table,file=file.path(output.path,"reduced_hi30_tax.txt"),sep="\t", quote=FALSE)
-
-physeq_combo_full_l030 <-merge_phyloseq(data_ITS_re_full_l030, data_16S_re_full_l030)
-ig_full_l030 <- adj2igraph(getRefit(se.cor_RE_full_l030),vertex.attr=list(name=c(taxa_names(data_ITS_re_full_l030),taxa_names(data_16S_re_full_l030))))
-write.table(physeq_combo_full_l030@tax_table,file=file.path(output.path,"full_l030_tax.txt"),sep="\t", quote=FALSE)
-
-physeq_combo_full_hi30 <-merge_phyloseq(data_ITS_re_full_hi30, data_16S_re_full_hi30)
-ig_full_hi30 <- adj2igraph(getRefit(se.cor_RE_full_hi30),vertex.attr=list(name=c(taxa_names(data_ITS_re_full_hi30),taxa_names(data_16S_re_full_hi30))))
-write.table(physeq_combo_full_hi30@tax_table,file=file.path(output.path,"full_hi30_tax.txt"),sep="\t", quote=FALSE)
-
-library(RColorBrewer)
-library(pals)
-#make vectors to plot all shapes and colors the same
-Kingdom_reduced_l030 <-unique(tax_table(physeq_combo_reduced_l030)[,"Kingdom"])
-Kingdom_reduced_hi30 <-unique(tax_table(physeq_combo_reduced_hi30)[,"Kingdom"])
-Kingdom_full_l030 <-unique(tax_table(physeq_combo_full_l030)[,"Kingdom"])
-Kingdom_full_hi30 <-unique(tax_table(physeq_combo_full_hi30)[,"Kingdom"])
-KingdomList<-do.call("rbind", list(Kingdom_reduced_l030,Kingdom_reduced_hi30,Kingdom_full_l030,Kingdom_full_hi30))%>%unique()
-KingdomShape = c(16,17,15)
-names(KingdomShape) = KingdomList
-
-
-getPalette = colorRampPalette(brewer.pal(9, "Set1"))
-Phylum_reduced_l030 <-unique(tax_table(physeq_combo_reduced_l030)[,"Phylum"])
-Phylum_reduced_hi30 <-unique(tax_table(physeq_combo_reduced_hi30)[,"Phylum"])
-Phylum_full_l030 <-unique(tax_table(physeq_combo_full_l030)[,"Phylum"])
-Phylum_full_hi30 <-unique(tax_table(physeq_combo_full_hi30)[,"Phylum"])
-PhylumList<-do.call("rbind", list(Phylum_reduced_l030, Phylum_reduced_hi30, Phylum_full_l030, Phylum_full_hi30))%>%unique()
-
-PhylumPalette = getPalette(length(PhylumList))
-names(PhylumPalette) = PhylumList
-
-#plot networks
-reduced_l030<-plot_network(ig_reduced_l030,physeq_combo_reduced_l030,type="taxa",color="Phylum",shape="Kingdom",label=NULL,point_size = 1)+scale_shape_manual(values=KingdomShape,drop=FALSE)+scale_color_manual(values=PhylumPalette,drop=FALSE)
-reduced_hi30<-plot_network(ig_reduced_hi30,physeq_combo_reduced_hi30,type="taxa",color="Phylum",shape="Kingdom",label=NULL,point_size=1)+scale_shape_manual(values=KingdomShape)+scale_color_manual(values=PhylumPalette)
-full_l030<-plot_network(ig_full_l030,physeq_combo_full_l030,type="taxa",color="Phylum",shape="Kingdom",label=NULL,point_size=1)+scale_shape_manual(values=KingdomShape)+scale_color_manual(values=PhylumPalette)
-full_hi30<-plot_network(ig_full_hi30,physeq_combo_full_hi30,type="taxa",color="Phylum",shape="Kingdom",label=NULL,point_size=1)+scale_shape_manual(values=KingdomShape)+scale_color_manual(values=PhylumPalette)
-
-
-re_network<-ggarrange(reduced_l030,reduced_hi30,full_l030,full_hi30,common.legend = TRUE,legend="bottom", labels=c("A","B","C","D"))
-ggsave("network_re.tiff",plot=re_network, width=11,height=7, device="tiff",dpi=600)
-
-# Export Network Information
-taxa.RE_reduced_l030 <-data.frame(tax_table(physeq_combo_reduced_l030))
-betaMat_RE_reduced_l030=as.matrix(symBeta(getOptBeta(se.cor_RE_reduced_l030)))
-total_re_reduced_l030 <- length(betaMat_RE_reduced_l030[betaMat_RE_reduced_l030!=0])/2 
-
-taxa.RE_reduced_hi30 <-data.frame(tax_table(physeq_combo_reduced_hi30))
-betaMat_RE_reduced_hi30=as.matrix(symBeta(getOptBeta(se.cor_RE_reduced_hi30)))
-total_re_reduced_hi30 <- length(betaMat_RE_reduced_hi30[betaMat_RE_reduced_hi30!=0])/2 
-
-taxa.RE_full_l030 <-data.frame(tax_table(physeq_combo_full_l030))
-betaMat_RE_full_l030=as.matrix(symBeta(getOptBeta(se.cor_RE_full_l030)))
-total_re_full_l030 <- length(betaMat_RE_full_l030[betaMat_RE_full_l030!=0])/2 
-
-taxa.RE_full_hi30 <-data.frame(tax_table(physeq_combo_full_hi30))
-betaMat_RE_full_hi30 =as.matrix(symBeta(getOptBeta(se.cor_RE_full_hi30)))
-
-wtRE_reduced_l030 <- symBeta(getOptBeta(se.cor_RE_reduced_l030), mode="maxabs")
-weightRE_reduced_l030 <-Matrix::summary(t(wtRE_reduced_l030))[,3]
-igRE_reduced_l030_wt <-adj2igraph(getRefit(se.cor_RE_reduced_l030),edge.attr=list(weight=weightRE_reduced_l030),vertex.attr=list(name=c(taxa_names(data_16S_re_reduced_l030),taxa_names(data_ITS_re_reduced_l030))))
-write.graph(igRE_reduced_l030_wt,file=file.path("spieceasi_reduced_l030.txt"),format="ncol") 
-
-wtRE_reduced_hi30 <- symBeta(getOptBeta(se.cor_RE_reduced_hi30), mode="maxabs")
-weightRE_reduced_hi30 <-Matrix::summary(t(wtRE_reduced_hi30))[,3]
-igRE_reduced_hi30_wt <-adj2igraph(getRefit(se.cor_RE_reduced_hi30),edge.attr=list(weight=weightRE_reduced_hi30),vertex.attr=list(name=c(taxa_names(data_16S_re_reduced_hi30),taxa_names(data_ITS_re_reduced_hi30))))
-write.graph(igRE_reduced_hi30_wt,file=file.path("spieceasi_reduced_hi30.txt"),format="ncol") 
-
-wtRE_full_l030 <- symBeta(getOptBeta(se.cor_RE_full_l030), mode="maxabs")
-weightRE_full_l030 <-Matrix::summary(t(wtRE_full_l030))[,3]
-igRE_full_l030_wt <-adj2igraph(getRefit(se.cor_RE_full_l030),edge.attr=list(weight=weightRE_full_l030),vertex.attr=list(name=c(taxa_names(data_16S_re_full_l030),taxa_names(data_ITS_re_full_l030))))
-write.graph(igRE_full_l030_wt,file=file.path("spieceasi_full_l030.txt"),format="ncol") 
-
-wtRE_full_hi30 <- symBeta(getOptBeta(se.cor_RE_full_hi30), mode="maxabs")
-weightRE_full_hi30 <-Matrix::summary(t(wtRE_full_hi30))[,3]
-igRE_full_hi30_wt <-adj2igraph(getRefit(se.cor_RE_full_hi30),edge.attr=list(weight=weightRE_full_hi30),vertex.attr=list(name=c(taxa_names(data_16S_re_full_hi30),taxa_names(data_ITS_re_full_hi30))))
-write.graph(igRE_full_hi30_wt,file=file.path("spieceasi_full_hi30.txt"),format="ncol") 
-
-# Rhizosphere Network --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-data_16S_rhizosphere <- subset_samples(data_16S_filtered, habitat=="rhizosphere")%>%
-  filter_taxa(function(x) sum(x > 5) > (0.4*length(x)), TRUE)
-data_16S_rhizo_reduced <- subset_samples(data_16S_rhizosphere, irrigation=="reduced")
-data_16S_rhizo_reduced_l030 <- subset_samples(data_16S_rhizo_reduced, drought_tolerance =="LO30")
-data_16S_rhizo_reduced_hi30 <- subset_samples(data_16S_rhizo_reduced, drought_tolerance == "HI30")
-data_16S_rhizo_full <- subset_samples(data_16S_rhizosphere, irrigation =="full")
-data_16S_rhizo_full_l030 <- subset_samples(data_16S_rhizo_full, drought_tolerance == "LO30")
-data_16S_rhizo_full_hi30 <- subset_samples(data_16S_rhizo_full, drought_tolerance == "HI30")
-
-data_ITS_rhizosphere <-subset_samples(data_ITS_filtered, habitat=="rhizosphere")%>%
-  filter_taxa(function(x) sum(x > 5) > (0.4*length(x)), TRUE)
-data_ITS_rhizo_reduced <- subset_samples(data_ITS_rhizosphere, irrigation=="reduced")
-data_ITS_rhizo_reduced_l030 <- subset_samples(data_ITS_rhizo_reduced, drought_tolerance =="LO30")
-data_ITS_rhizo_reduced_hi30 <- subset_samples(data_ITS_rhizo_reduced, drought_tolerance == "HI30")
-data_ITS_rhizo_full <- subset_samples(data_ITS_rhizosphere, irrigation =="full")
-data_ITS_rhizo_full_l030 <- subset_samples(data_ITS_rhizo_full, drought_tolerance == "LO30")
-data_ITS_rhizo_full_hi30 <- subset_samples(data_ITS_rhizo_full, drought_tolerance == "HI30")
-
-#remove sample not present in the ITS for reduced x LO30: 1024-4-17-37
-data_ITS_rhizo_reduced_l030 <- subset_samples(data_ITS_rhizo_reduced_l030, data_ITS_rhizo_reduced_l030@sam_data@row.names!="1024-4-17-37")
-
-
-se.cor_rhizo_reduced_l030 <- spiec.easi(list(data_ITS_rhizo_reduced_l030, data_16S_rhizo_reduced_l030), 
-                                        method='mb', 
-                                        nlambda=100, 
-                                        lambda.min.ratio=1e-1, 
-                                        pulsar.params = list(thresh = 0.01))
-
-se.cor_rhizo_reduced_hi30 <- spiec.easi(list(data_ITS_rhizo_reduced_hi30, data_16S_rhizo_reduced_hi30),
-                                        method='mb',
-                                        nlambda=100,
-                                        lambda.min.ratio=1e-1,
-                                        pulsar.params = list(thresh= 0.01))
-
-se.cor_rhizo_full_l030 <- spiec.easi(list(data_ITS_rhizo_full_l030, data_16S_rhizo_full_l030),
-                                     method='mb',
-                                     nlambda=100,
-                                     lambda.min.ratio=1e-1,
-                                     pulsar.params = list(thresh= 0.01))
-
-#remove sample not present in the ITS for reduced x LO30: 1024-4-17-37
-data_16S_rhizo_full_hi30 <- subset_samples(data_16S_rhizo_full_hi30, data_16S_rhizo_full_hi30@sam_data@row.names!="GW9589-2-11-71")
-se.cor_rhizo_full_hi30 <- spiec.easi(list(data_16S_rhizo_full_hi30, data_16S_rhizo_full_hi30),
-                                     method='mb',
-                                     nlambda=100,
-                                     lambda.min.ratio=5e-2,
-                                     pulsar.params = list(thresh= 0.01))
-
- library(RColorBrewer)
-library(pals)
-#make vectors to plot all shapes and colors the same
-Kingdom_reduced_l030 <-unique(tax_table(physeq_combo_reduced_l030)[,"Kingdom"])
-Kingdom_reduced_hi30 <-unique(tax_table(physeq_combo_reduced_hi30)[,"Kingdom"])
-Kingdom_full_l030 <-unique(tax_table(physeq_combo_full_l030)[,"Kingdom"])
-Kingdom_full_hi30 <-unique(tax_table(physeq_combo_full_hi30)[,"Kingdom"])
-KingdomList<-do.call("rbind", list(Kingdom_reduced_l030, Kingdom_reduced_hi30, Kingdom_full_l030, Kingdom_full_hi30))%>%unique()
-KingdomShape = c(16,17,15)
-names(KingdomShape) = KingdomList
-
-
-getPalette = colorRampPalette(brewer.pal(9, "Set1"))
-Phylum_reduced_l030 <-unique(tax_table(physeq_combo_reduced_l030)[,"Phylum"])
-Phylum_reduced_hi30 <-unique(tax_table(physeq_combo_reduced_hi30)[,"Phylum"])
-Phylum_full_l030 <-unique(tax_table(physeq_combo_full_l030)[,"Phylum"])
-Phylum_full_hi30 <-unique(tax_table(physeq_combo_full_hi30)[,"Phylum"])
-PhylumList<-do.call("rbind", list(Phylum_reduced_l030, Phylum_reduced_hi30, Phylum_full_l030, Phylum_full_hi30))%>%unique()
-
-PhylumPalette = getPalette(length(PhylumList))
-names(PhylumPalette) = PhylumList
-
-#plot networks
-reduced_l030<-plot_network(ig_reduced_l030,physeq_combo_reduced_l030,type="taxa",color="Phylum",shape="Kingdom",label=NULL,point_size = 1)+scale_shape_manual(values=KingdomShape,drop=FALSE)+scale_color_manual(values=PhylumPalette,drop=FALSE)
-reduced_hi30<-plot_network(ig_reduced_hi30,physeq_combo_reduced_hi30,type="taxa",color="Phylum",shape="Kingdom",label=NULL,point_size=1)+scale_shape_manual(values=KingdomShape)+scale_color_manual(values=PhylumPalette)
-full_l030<-plot_network(ig_full_l030,physeq_combo_full_l030,type="taxa",color="Phylum",shape="Kingdom",label=NULL,point_size=1)+scale_shape_manual(values=KingdomShape)+scale_color_manual(values=PhylumPalette)
-full_hi30<-plot_network(ig_full_hi30,physeq_combo_full_hi30,type="taxa",color="Phylum",shape="Kingdom",label=NULL,point_size=1)+scale_shape_manual(values=KingdomShape)+scale_color_manual(values=PhylumPalette)
-
-reduced_l030
-
-rhizo_network<-ggarrange(reduced_l030,reduced_hi30,full_l030,full_hi30,common.legend = TRUE,legend="bottom", labels=c("A","B","C","D"))
-ggsave("network_rhizo.tiff",plot=rhizo_network, width=11,height=7, device="tiff",dpi=600)
-
-# Export Network Information
-taxa.rhizo_reduced_l030 <-data.frame(tax_table(physeq_combo_reduced_l030))
-betaMat_rhizo_reduced_l030=as.matrix(symBeta(getOptBeta(se.cor_rhizo_reduced_l030)))
-total_rhizo_reduced_l030 <- length(betaMat_rhizo_reduced_l030[betaMat_rhizo_reduced_l030!=0])/2 
-
-taxa.rhizo_reduced_hi30 <-data.frame(tax_table(physeq_combo_reduced_hi30))
-betaMat_rhizo_reduced_hi30=as.matrix(symBeta(getOptBeta(se.cor_rhizo_reduced_hi30)))
-total_rhizo_reduced_hi30 <- length(betaMat_rhizo_reduced_hi30[betaMat_rhizo_reduced_hi30!=0])/2 
-
-taxa.rhizo_full_l030 <-data.frame(tax_table(physeq_combo_full_l030))
-betaMat_rhizo_full_l030=as.matrix(symBeta(getOptBeta(se.cor_rhizo_full_l030)))
-total_rhizo_full_l030 <- length(betaMat_rhizo_full_l030[betaMat_rhizo_full_l030!=0])/2 
-
-taxa.rhizo_full_hi30 <-data.frame(tax_table(physeq_combo_full_hi30))
-betaMat_rhizo_full_hi30 =as.matrix(symBeta(getOptBeta(se.cor_rhizo_full_hi30)))
-
-wtrhizo_reduced_l030 <- symBeta(getOptBeta(se.cor_rhizo_reduced_l030), mode="maxabs")
-weightrhizo_reduced_l030 <-Matrix::summary(t(wtrhizo_reduced_l030))[,3]
-igrhizo_reduced_l030_wt <-adj2igraph(getRefit(se.cor_rhizo_reduced_l030),edge.attr=list(weight=weightrhizo_reduced_l030),vertex.attr=list(name=c(taxa_names(data_16S_rhizo_reduced_l030),taxa_names(data_ITS_rhizo_reduced_l030))))
-write.graph(igrhizo_reduced_l030_wt,file=file.path("spieceasi_reduced_l030.txt"),format="ncol") 
-
-wtrhizo_reduced_hi30 <- symBeta(getOptBeta(se.cor_rhizo_reduced_hi30), mode="maxabs")
-weightrhizo_reduced_hi30 <-Matrix::summary(t(wtrhizo_reduced_hi30))[,3]
-igrhizo_reduced_hi30_wt <-adj2igraph(getRefit(se.cor_rhizo_reduced_hi30),edge.attr=list(weight=weightrhizo_reduced_hi30),vertex.attr=list(name=c(taxa_names(data_16S_rhizo_reduced_hi30),taxa_names(data_ITS_rhizo_reduced_hi30))))
-write.graph(igrhizo_reduced_hi30_wt,file=file.path("spieceasi_reduced_hi30.txt"),format="ncol") 
-
-wtrhizo_full_l030 <- symBeta(getOptBeta(se.cor_rhizo_full_l030), mode="maxabs")
-weightrhizo_full_l030 <-Matrix::summary(t(wtrhizo_full_l030))[,3]
-igrhizo_full_l030_wt <-adj2igraph(getRefit(se.cor_rhizo_full_l030),edge.attr=list(weight=weightrhizo_full_l030),vertex.attr=list(name=c(taxa_names(data_16S_rhizo_full_l030),taxa_names(data_ITS_rhizo_full_l030))))
-write.graph(igrhizo_full_l030_wt,file=file.path("spieceasi_full_l030.txt"),format="ncol") 
-
-wtrhizo_full_hi30 <- symBeta(getOptBeta(se.cor_rhizo_full_hi30), mode="maxabs")
-weightrhizo_full_hi30 <-Matrix::summary(t(wtrhizo_full_hi30))[,3]
-igrhizo_full_hi30_wt <-adj2igraph(getRefit(se.cor_rhizo_full_hi30),edge.attr=list(weight=weightrhizo_full_hi30),vertex.attr=list(name=c(taxa_names(data_16S_rhizo_full_hi30),taxa_names(data_ITS_rhizo_full_hi30))))
-write.graph(igrhizo_full_hi30_wt,file=file.path("spieceasi_full_hi30.txt"),format="ncol") 
