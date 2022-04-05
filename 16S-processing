@@ -1,0 +1,44 @@
+
+#!/bin/bash -l
+
+#SBATCH -A bsd
+#SBATCH -p high_mem
+#SBATCH -N 1
+#SBATCH -c 1
+#SBATCH -J taxassign
+#SBATCH -o ./taxassign_err_output.txt
+#SBATCH -e ./taxassign_stdrd_error2.txt
+#SBATCH --mem=250G
+#SBATCH -t 2-0:0:0
+#SBATCH --mail-type=FAIL
+#SBATCH --mail-user=carrellaa@ornl.gov
+
+cd $SLURM_SUBMIT_DIR #change to directory that script is in
+module load anaconda3
+conda activate qiime2-2019.10
+
+qiime cutadapt trim-paired --i-demultiplexed-sequences 16S-paired-end-demux.qza \
+  --p-cores 4 \
+  --p-front-f GTGBCAGCMGCHGCGGTAA \
+  --p-front-r GGACTACHVGGGTWTCTAAT \
+  --o-trimmed-sequences 16S-rhizo-trim-pe.qza
+
+qiime dada2 denoise-paired --i-demultiplexed-seqs 16S-trim-pe.qza \
+  --p-trim-left-f 0 \
+  --p-trim-left-r 0 \
+  --p-trunc-len-f 230 \
+  --p-trunc-len-r 230 \
+  --o-table 16S-dada2table.qza \
+  --o-representative-sequences 16S-rep-seqs.qza \
+  --o-denoising-stats 16S-denoising-stats.qza \
+  --p-n-threads 36
+
+ qiime feature-classifier classify-sklearn \
+   --i-classifier silva-132-99-515-806-nb-classifier.qza \
+   --i-reads 16S-rep-seqs.qza \
+   --o-classification 16S-taxonomy.qza \
+   --p-n-jobs 36
+
+
+      
+      

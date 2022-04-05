@@ -1,0 +1,92 @@
+####ITS Analysis#####
+
+#rhizosphere#
+
+##trim primer sequences
+qiime cutadapt trim-paired --i-demultiplexed-sequences ITS-paired-end-demux.qza \
+  --p-cores 4 \
+  --p-front-f CAHCGATGAAGAACGYDG \
+  --p-front-r TCCTSSSCTTATTGATATGC \
+  --o-trimmed-sequences ITS-rhizo-trim-pe.qza
+
+##truncate sequences, assign SVs
+qiime dada2 denoise-paired --i-demultiplexed-seqs ITS-rhizo-trim-pe.qza \
+  --p-trim-left-f 0 \
+  --p-trim-left-r 0 \
+  --p-trunc-len-f 230 \
+  --p-trunc-len-r 230 \
+  --o-table ITS-rhizo-dada2table.qza \
+  --o-representative-sequences ITS-rhizo-rep-seqs.qza \
+  --o-denoising-stats ITS-rhizo-denoising-stats.qza \
+  --p-n-threads 36
+
+  #soil#
+
+  ##trim primer sequences
+
+  qiime cutadapt trim-paired --i-demultiplexed-sequences soil_ITS_pe_demux.qza \
+    --p-cores 4 \
+    --p-front-f GTGBCAGCMGCHGCGGTAA \
+    --p-front-r GGACTACHVGGGTWTCTAAT \
+    --o-trimmed-sequences ITS-s-trim-pe.qza
+
+##truncate sequences, assign SVs
+  qiime dada2 denoise-paired --i-demultiplexed-seqs ITS-s-trim-pe.qza \
+    --p-trim-left-f 0 \
+    --p-trim-left-r 0 \
+    --p-trunc-len-f 230 \
+    --p-trunc-len-r 230 \
+    --o-table ITS-s-dada2table.qza \
+    --o-representative-sequences ITS-s-rep-seqs.qza \
+    --o-denoising-stats ITS-s-denoising-stats.qza \
+    --p-n-threads 36
+
+    #root endosphere#
+
+  ##trim primer sequences
+    qiime cutadapt trim-paired --i-demultiplexed-sequences re_ITS_pe_demux.qza \
+      --p-cores 4 \
+      --p-front-f GTGBCAGCMGCHGCGGTAA \
+      --p-front-r GGACTACHVGGGTWTCTAAT \
+      --o-trimmed-sequences ITS-re-trim-pe.qza
+
+    ##truncate sequences, assign SVs
+    qiime dada2 denoise-paired --i-demultiplexed-seqs ITS-re-trim-pe.qza \
+      --p-trim-left-f 0 \
+      --p-trim-left-r 0 \
+      --p-trunc-len-f 230 \
+      --p-trunc-len-r 230 \
+      --o-table ITS-re-dada2table.qza \
+      --o-representative-sequences ITS-re-rep-seqs.qza \
+      --o-denoising-stats ITS-re-denoising-stats.qza \
+      --p-n-threads 36
+
+    #merge dada2 tables
+      qiime feature-table merge \
+        --i-tables ITS-s-dada2table.qza \
+        --i-tables ITS-re-dada2table.qza \
+        --i-tables ITS-rhizo-dada2table.qza \
+        --o-merged-table ITS-merged-table.qza
+
+      #merge representative sequences
+      qiime feature-table merge-seqs \
+        --i-data ITS-s-rep-seqs.qza \
+        --i-data ITS-re-rep-seqs.qza  \
+        --i-data ITS-rhizo-rep-seqs.qza  \
+        --o-merged-data ITS-merged-rep-seqs.qza
+
+      #classifiy with unite database
+       qiime feature-classifier classify-sklearn \
+      --i-classifier unite-ver8-dynamic-classifier-07Nov2019.qza\
+      --i-reads ITS-merged-rep-seqs.qza \
+      --o-classification ITS-taxonomy.qza \
+      --p-n-jobs 36
+      
+      #filter ITS sequences to remove plant, mitochondrial, or unclassified DNA
+      qiime taxa filter-table
+      --i-table ITS-merged-table.qza
+      --i-taxonomy ITS-taxonomy.qza
+      --p-exclude mitochondria
+      --p-exclude p__unidentified
+      --o-filtered-table ITS-merged-filtered-table.qza
+      
